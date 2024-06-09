@@ -1,34 +1,29 @@
+/* eslint-disable no-case-declarations */
 import { APIGatewayProxyResult } from 'aws-lambda';
 
+import { handleError } from '../../middleware/errorHandler';
 import { ProxyHandler } from '../../types/lambdaHandler.types';
+import { createSpace, deleteSpace, getSpaces, updateSpace } from './spaceActions';
 
 const handler: ProxyHandler = async (event): Promise<APIGatewayProxyResult> => {
   try {
-    let message: string;
-
     switch (event.httpMethod) {
       case 'GET':
-        message = 'Hello from GET!';
-        break;
+        return await getSpaces(event);
       case 'POST':
-        message = 'Hello from POST!';
-        break;
+        return await createSpace(event);
+      case 'PATCH':
+        return await updateSpace(event);
+      case 'DELETE':
+        return await deleteSpace(event);
       default:
-        message = 'Unsupported HTTP method';
-        break;
+        return {
+          statusCode: 405,
+          body: JSON.stringify({ message: 'Method Not Allowed' }),
+        };
     }
-
-    const response: APIGatewayProxyResult = {
-      statusCode: message === 'Unsupported HTTP method' ? 400 : 200,
-      body: JSON.stringify(`${message}`),
-    };
-
-    return response;
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify('Oops, something went wrong'),
-    };
+    return handleError(error);
   }
 };
 
