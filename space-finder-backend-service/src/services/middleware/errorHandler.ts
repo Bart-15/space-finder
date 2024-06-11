@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { headers } from '../infra/Utils';
+import { headers } from '../shared/utils';
 export class HttpError extends Error {
   constructor(
     // eslint-disable-next-line no-unused-vars

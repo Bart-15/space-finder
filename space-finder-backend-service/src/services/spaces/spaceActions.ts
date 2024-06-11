@@ -8,14 +8,11 @@ import {
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import { generateUUID } from '../../infra/Utils';
-import { successResponse } from '../../middleware/apiGatewayResponse';
-import { HttpError } from '../../middleware/errorHandler';
-import validateResource from '../../middleware/validateResource';
-import {
-  createLocationPayload,
-  createSpaceValidationSchema,
-} from '../../validation/space.validation';
+import { successResponse } from '../middleware/apiGatewayResponse';
+import { HttpError } from '../middleware/errorHandler';
+import validateResource from '../middleware/validateResource';
+import { generateUUID, hasAdminGroup } from '../shared/utils';
+import { createLocationPayload, createSpaceValidationSchema } from '../validation/space.validation';
 import { ddbClient } from './../../config/dynamoDb';
 
 export async function createSpace(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
@@ -114,6 +111,12 @@ export async function updateSpace(event: APIGatewayProxyEvent): Promise<APIGatew
 }
 
 export async function deleteSpace(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  if (!hasAdminGroup(event)) {
+    throw new HttpError(401, {
+      message: 'Not Authorized!',
+    });
+  }
+
   if (event.queryStringParameters && 'id' in event.queryStringParameters) {
     const spaceId = event.queryStringParameters['id'] as string;
 

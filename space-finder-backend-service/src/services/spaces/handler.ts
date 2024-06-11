@@ -1,8 +1,8 @@
 /* eslint-disable no-case-declarations */
 import { APIGatewayProxyResult } from 'aws-lambda';
 
-import { handleError } from '../../middleware/errorHandler';
 import { ProxyHandler } from '../../types/lambdaHandler.types';
+import { handleError } from '../middleware/errorHandler';
 import { createSpace, deleteSpace, getSpaces, updateSpace } from './spaceActions';
 
 const handler: ProxyHandler = async (event): Promise<APIGatewayProxyResult> => {
