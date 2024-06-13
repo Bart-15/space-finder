@@ -3,25 +3,34 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 
 import { ProxyHandler } from '../../types/lambdaHandler.types';
 import { handleError } from '../middleware/errorHandler';
+import { addCorsHeader } from '../shared/utils';
 import { createSpace, deleteSpace, getSpaces, updateSpace } from './spaceActions';
 
 const handler: ProxyHandler = async (event): Promise<APIGatewayProxyResult> => {
   try {
+    let result: APIGatewayProxyResult;
+
     switch (event.httpMethod) {
       case 'GET':
-        return await getSpaces(event);
+        result = await getSpaces(event);
+        break;
       case 'POST':
-        return await createSpace(event);
+        result = await createSpace(event);
+        break;
       case 'PATCH':
-        return await updateSpace(event);
+        result = await updateSpace(event);
+        break;
       case 'DELETE':
-        return await deleteSpace(event);
+        result = await deleteSpace(event);
+        break;
       default:
-        return {
+        result = {
           statusCode: 405,
           body: JSON.stringify({ message: 'Method Not Allowed' }),
         };
     }
+
+    return addCorsHeader(result);
   } catch (error) {
     return handleError(error);
   }

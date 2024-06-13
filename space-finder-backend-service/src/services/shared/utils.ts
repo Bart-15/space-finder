@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { randomUUID } from 'crypto';
 
 export const generateUUID = () => randomUUID();
@@ -29,4 +29,12 @@ export function hasAdminGroup(event: APIGatewayProxyEvent) {
     return (groups as string).includes('admins');
   }
   return false;
+}
+
+export function addCorsHeader(arg: APIGatewayProxyResult): APIGatewayProxyResult {
+  arg.headers ??= {};
+  arg.headers['Access-Control-Allow-Origin'] = '*';
+  arg.headers['Access-Control-Allow-Methods'] = '*';
+
+  return arg;
 }

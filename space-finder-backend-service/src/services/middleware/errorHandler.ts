@@ -26,16 +26,6 @@ export function handleError(error: unknown) {
     };
   }
 
-  //TODO: Add more error handling
-
-  if (error instanceof SyntaxError) {
-    return {
-      statusCode: 400,
-      headers,
-      body: JSON.stringify({ error: `Invalid request body format : "${error.message}"` }),
-    };
-  }
-
   if (error instanceof HttpError) {
     return {
       statusCode: error.statusCode,

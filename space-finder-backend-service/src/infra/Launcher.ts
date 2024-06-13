@@ -5,6 +5,7 @@ import { ApiStack } from './stacks/ApiStack';
 import { AuthStack } from './stacks/AuthStack';
 import { DataStack } from './stacks/DataStack';
 import { LambdaStack } from './stacks/LambdaStack';
+import { UiDeploymentStack } from './stacks/UiDeploymentStack';
 
 const app = new cdk.App();
 
@@ -17,4 +18,8 @@ const authStack = new AuthStack(app, 'AuthStack');
 new ApiStack(app, 'ApiStack', {
   spacesLambdaIntegration: lamdbdaStack.spacesLambdaIntegration,
   userPool: authStack.userPool,
+});
+
+new UiDeploymentStack(app, 'UiDeploymentStack', {
+  deploymentBucket: dataStack.deploymentBucket,
 });
