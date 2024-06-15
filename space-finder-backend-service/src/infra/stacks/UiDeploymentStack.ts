@@ -13,7 +13,7 @@ export class UiDeploymentStack extends Stack {
   constructor(scope: Construct, id: string, props: UiDeploymentStackProps) {
     super(scope, id, props);
 
-    const uiDir = join(__dirname, '..', '..', '..', '..', 'space-finder-client', 'dist');
+    const uiDir = join(__dirname, '..', '..', '..', '..', 'space-finder-client', 'out');
 
     if (existsSync(uiDir)) {
       new BucketDeployment(this, 'space-finder-ui-deployment', {

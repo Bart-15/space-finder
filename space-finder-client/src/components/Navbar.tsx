@@ -1,13 +1,16 @@
 // components/Navbar.js
 import Link from 'next/link';
+import { useContext } from 'react';
+
+import { AuthCognitoContext } from '@/Provider/CognitoProvider';
 
 import { Button } from './ui/button';
 
-type NavbarProps = {
-  userName: string | undefined;
-};
+const Navbar = () => {
+  const cognito = useContext(AuthCognitoContext);
+  if (!cognito) throw new Error('Cognito context is undefined');
 
-const Navbar = ({ userName }: NavbarProps) => {
+  const { user } = cognito;
   return (
     <nav className='bg-gray-800 p-4'>
       <div className='container mx-auto flex items-center justify-between'>
@@ -24,8 +27,8 @@ const Navbar = ({ userName }: NavbarProps) => {
         </div>
         <div>
           <Button variant='outline'>
-            {userName ? (
-              <Link href='/logout'> Logout </Link>
+            {user ? (
+              <p onClick={cognito.handleSignout}> Logout </p>
             ) : (
               <Link href='/login'> Login </Link>
             )}

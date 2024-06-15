@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { AuthCognitoContext } from '@/Provider/CognitoProvider';
 import {
   loginPayload,
   loginValidationSchema,
@@ -20,6 +22,9 @@ import { Input } from './ui/input';
 import { InputPassword } from './ui/input-password';
 
 const LoginForm = () => {
+  const cognito = useContext(AuthCognitoContext);
+  if (!cognito) throw new Error('Cognito context is undefined');
+
   const {
     register,
     handleSubmit,
@@ -35,9 +40,12 @@ const LoginForm = () => {
     },
   });
 
+  if (cognito.loading) {
+    return '';
+  }
+
   async function handleLogin(values: loginPayload) {
-    const payload = { ...values };
-    console.log(payload);
+    cognito?.handleLogin(values);
   }
 
   return (
