@@ -1,5 +1,7 @@
+import SpacesContainer from '@/components/spaces/SpacesContainer';
+
 const SpacesPage = () => {
-  return <h2>This is spaces page</h2>;
+  return <SpacesContainer />;
 };
 
 export default SpacesPage;

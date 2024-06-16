@@ -70,7 +70,6 @@ const AuthCognitoProvider = ({ children }: IAuthCognitoProviderProps) => {
 
   async function handleLogin(payload: loginPayload) {
     try {
-      setLoading(true);
       const { nextStep } = await signIn(payload);
       const checkStep = nextStep.signInStep;
 
@@ -84,8 +83,6 @@ const AuthCognitoProvider = ({ children }: IAuthCognitoProviderProps) => {
           message: error.message,
         });
       }
-    } finally {
-      setLoading(false);
     }
   }
 

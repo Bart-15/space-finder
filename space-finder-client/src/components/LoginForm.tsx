@@ -29,8 +29,6 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-    setValue,
   } = useForm<loginPayload>({
     mode: 'onChange',
     resolver: zodResolver(loginValidationSchema),

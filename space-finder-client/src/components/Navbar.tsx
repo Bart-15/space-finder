@@ -11,6 +11,10 @@ const Navbar = () => {
   if (!cognito) throw new Error('Cognito context is undefined');
 
   const { user } = cognito;
+  if (cognito.loading) {
+    return '';
+  }
+
   return (
     <nav className='bg-gray-800 p-4'>
       <div className='container mx-auto flex items-center justify-between'>
@@ -26,12 +30,11 @@ const Navbar = () => {
           </Link>
         </div>
         <div>
-          <Button variant='outline'>
-            {user ? (
-              <p onClick={cognito.handleSignout}> Logout </p>
-            ) : (
-              <Link href='/login'> Login </Link>
-            )}
+          <Button
+            variant='outline'
+            onClick={user ? cognito.handleSignout : () => {}}
+          >
+            {user ? <p> Logout </p> : <Link href='/login'> Login </Link>}
           </Button>
         </div>
       </div>
