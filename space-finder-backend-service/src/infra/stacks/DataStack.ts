@@ -1,6 +1,6 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { AttributeType, ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
+import { Bucket, HttpMethods, IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 import { getSuffixFromStack } from '../Utils';
@@ -8,6 +8,7 @@ import { getSuffixFromStack } from '../Utils';
 export class DataStack extends Stack {
   public readonly spacesTable: ITable;
   public readonly deploymentBucket: IBucket;
+  public readonly photosBucket: IBucket;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -15,7 +16,7 @@ export class DataStack extends Stack {
     const suffix = getSuffixFromStack(this);
 
     // ----------------------------------------------------
-    // -                  S3 Bucket                       -
+    // -                  S3 Bucket                     -
     // ----------------------------------------------------
     this.deploymentBucket = new Bucket(this, 'SpaceFinderClient', {
       bucketName: `space-finder-client-${suffix}`,
@@ -27,6 +28,27 @@ export class DataStack extends Stack {
       },
       publicReadAccess: true,
       websiteIndexDocument: 'index.html',
+    });
+
+    this.photosBucket = new Bucket(this, 'SpaceFinderPhotos', {
+      bucketName: `space-finder-photos-${suffix}`,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      },
+      cors: [
+        {
+          allowedMethods: [HttpMethods.HEAD, HttpMethods.GET, HttpMethods.PUT],
+          allowedOrigins: ['*'],
+          allowedHeaders: ['*'],
+        },
+      ],
+    });
+
+    new CfnOutput(this, 'SpaceFinderPhotosBucketName', {
+      value: this.photosBucket.bucketName,
     });
 
     // ----------------------------------------------------

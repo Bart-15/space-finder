@@ -1,8 +1,10 @@
 'use client';
-import AddSpaceDialog from './AddSpaceDialog';
+import dynamic from 'next/dynamic';
+
+const DynamicAddSpaceDialog = dynamic(() => import('./AddSpaceDialog'));
 
 const SpacesContainer = () => {
-  return <AddSpaceDialog />;
+  return <DynamicAddSpaceDialog />;
 };
 
 export default SpacesContainer;
