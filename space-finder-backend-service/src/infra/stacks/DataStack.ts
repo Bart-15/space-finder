@@ -1,6 +1,12 @@
 import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { AttributeType, ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Bucket, HttpMethods, IBucket } from 'aws-cdk-lib/aws-s3';
+import {
+  BlockPublicAccess,
+  Bucket,
+  BucketAccessControl,
+  HttpMethods,
+  IBucket,
+} from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 import { getSuffixFromStack } from '../Utils';
@@ -32,12 +38,8 @@ export class DataStack extends Stack {
 
     this.photosBucket = new Bucket(this, 'SpaceFinderPhotos', {
       bucketName: `space-finder-photos-${suffix}`,
-      blockPublicAccess: {
-        blockPublicAcls: false,
-        blockPublicPolicy: false,
-        ignorePublicAcls: false,
-        restrictPublicBuckets: false,
-      },
+      blockPublicAccess: BlockPublicAccess.BLOCK_ACLS,
+      accessControl: BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
       cors: [
         {
           allowedMethods: [HttpMethods.HEAD, HttpMethods.GET, HttpMethods.PUT],

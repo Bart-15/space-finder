@@ -12,6 +12,8 @@ interface AuthCognitoContextProps {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   user: AuthUser | null;
+  token: string;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
   setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
 }
 
@@ -24,6 +26,7 @@ const AuthCognitoProvider = ({ children }: IAuthCognitoProviderProps) => {
 
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [token, setToken] = useState<string>('');
 
   useEffect(() => {
     async function init() {
@@ -34,6 +37,7 @@ const AuthCognitoProvider = ({ children }: IAuthCognitoProviderProps) => {
       if (accessToken) {
         const user = await getAuthUser();
         setHeaderToken(accessToken!);
+        setToken(accessToken);
         setUser(user);
       }
 
@@ -48,6 +52,8 @@ const AuthCognitoProvider = ({ children }: IAuthCognitoProviderProps) => {
     loading,
     setLoading,
     user,
+    token,
+    setToken,
     setUser,
   };
 

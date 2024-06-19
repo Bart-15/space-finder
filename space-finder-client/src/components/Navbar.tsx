@@ -12,8 +12,9 @@ const Navbar = () => {
   const cognito = useContext(AuthCognitoContext);
   if (!cognito) throw new Error('Cognito context is undefined');
 
-  const { user } = cognito;
+  const { user, token } = cognito;
 
+  console.log('hello', token);
   return (
     <nav className='bg-gray-800 p-4'>
       <div className='container mx-auto flex items-center justify-between'>

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useS3ImageUpload } from '@/hooks/useS3ImageUpload';
+import { AuthCognitoContext } from '@/Provider/CognitoProvider';
 import {
   CreateSpacePayload,
   CreateSpaceValidaton,
@@ -23,6 +25,12 @@ import UploadPhoto from './UploadPhoto';
 interface AddSpaceDialogProps {}
 
 const AddSpaceDialog = ({}: AddSpaceDialogProps) => {
+  const cognito = useContext(AuthCognitoContext);
+  if (!cognito) throw new Error('Cognito context is undefined');
+
+  const { token } = cognito;
+
+  const { uploadFile } = useS3ImageUpload();
   const [openDialog, setDialog] = useState(false);
   const [imgLink, setImgLink] = useState<string>('');
 
@@ -45,7 +53,9 @@ const AddSpaceDialog = ({}: AddSpaceDialogProps) => {
   useEffect(() => reset(), [openDialog, reset]);
 
   async function handleAddSpace(values: CreateSpacePayload) {
-    console.log('hello', values);
+    const result = await uploadFile(token, values.photo);
+
+    console.log('Heress the result', result);
   }
 
   return (

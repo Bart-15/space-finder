@@ -49,6 +49,7 @@ export function useAuth() {
 
         cognito?.setUser(user);
         setHeaderToken(accessToken!);
+        cognito?.setToken(accessToken!);
         router.push('/spaces');
       }
     } catch (error) {
