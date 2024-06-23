@@ -13,7 +13,7 @@ export function useS3ImageUpload() {
     const credentials = await generateTemporaryCredentials(token);
 
     const s3Client = new S3Client({
-      credentials: credentials,
+      credentials,
       region: awsRegion,
     });
 
@@ -23,8 +23,9 @@ export function useS3ImageUpload() {
       ACL: 'public-read',
       Body: file,
     });
-    await s3Client.send(command);
-    // return `https://${command.input.Bucket}.s3.${awsRegion}.amazonaws.com/${command.input.Key}`;
+    const response = await s3Client.send(command);
+    console.log(response);
+    return `https://${command.input.Bucket}.s3.${awsRegion}.amazonaws.com/${command.input.Key}`;
   }
 
   return {

@@ -1,11 +1,11 @@
 import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { AttributeType, ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
-  BlockPublicAccess,
   Bucket,
   BucketAccessControl,
   HttpMethods,
   IBucket,
+  ObjectOwnership,
 } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -38,8 +38,6 @@ export class DataStack extends Stack {
 
     this.photosBucket = new Bucket(this, 'SpaceFinderPhotos', {
       bucketName: `space-finder-photos-${suffix}`,
-      blockPublicAccess: BlockPublicAccess.BLOCK_ACLS,
-      accessControl: BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
       cors: [
         {
           allowedMethods: [HttpMethods.HEAD, HttpMethods.GET, HttpMethods.PUT],
@@ -47,6 +45,14 @@ export class DataStack extends Stack {
           allowedHeaders: ['*'],
         },
       ],
+      accessControl: BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
+      objectOwnership: ObjectOwnership.OBJECT_WRITER,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      },
     });
 
     new CfnOutput(this, 'SpaceFinderPhotosBucketName', {

@@ -66,6 +66,7 @@ export class AuthStack extends Stack {
     new CfnUserPoolGroup(this, 'SpaceAdmin', {
       userPoolId: this.userPool.userPoolId,
       groupName: 'admins',
+      roleArn: this.adminRole?.roleArn,
     });
   }
 
@@ -100,6 +101,7 @@ export class AuthStack extends Stack {
         'sts:AssumeRoleWithWebIdentity'
       ),
     });
+
     this.unAuthenticatedRole = new Role(this, 'CognitoDefaultUnauthenticatedRole', {
       assumedBy: new FederatedPrincipal(
         'cognito-identity.amazonaws.com',
@@ -134,7 +136,7 @@ export class AuthStack extends Stack {
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ['s3:PutObject', 's3:PutObjectAcl'],
-        resources: [photosBucket.bucketArn + '/*'],
+        resources: [photosBucket.bucketArn + '/*'], // Like this
       })
     );
   }
